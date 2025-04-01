@@ -30,8 +30,14 @@ public class RayTracer {
         BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         Scene scene = new Scene();
 
-        scene.addSphere(new Sphere(new Vector(-0.7, 0.7, 1), 1, Color.CYAN));
-        scene.addSphere(new Sphere(new Vector(0, 0, 2), 2, Color.BLUE));
+        // Add spheres
+        scene.addSphere(new Sphere(new Vector(-1.0, 0.7, 2), 1, new Color(0, 180, 180))); // Cyan sphere
+        scene.addSphere(new Sphere(new Vector(1.0, 0.1, 1), 0.7, new Color(220, 100, 100))); // Red sphere
+        scene.addSphere(new Sphere(new Vector(0, -1001, 0), 1000, new Color(200, 200, 100))); // Ground plane as huge sphere
+
+        // Add lights
+        scene.addLight(new Light(new Vector(-5, 5, -5), Color.WHITE, 0.8)); // Main light
+        scene.addLight(new Light(new Vector(3, 3, -3), new Color(200, 200, 255), 0.4)); // Fill light
 
         // Create a list of all scan lines and shuffle them randomly
         List<Integer> scanLines = new ArrayList<>(HEIGHT);

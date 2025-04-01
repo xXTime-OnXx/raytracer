@@ -6,6 +6,10 @@ public record Vector(double x, double y, double z) {
         return new Vector(x - v.x, y - v.y, z - v.z);
     }
 
+    public Vector add(Vector v) {
+        return new Vector(x + v.x, y + v.y, z + v.z);
+    }
+
     public Vector normalize() {
         double length = Math.sqrt(x * x + y * y + z * z);
         return new Vector(x / length, y / length, z / length);
@@ -18,4 +22,5 @@ public record Vector(double x, double y, double z) {
     public Vector scale(double s) {
         return new Vector(x * s, y * s, z * s);
     }
+
 }

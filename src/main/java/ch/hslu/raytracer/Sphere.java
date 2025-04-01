@@ -14,6 +14,7 @@ public class Sphere {
         this.color = color;
     }
 
+    public Vector getCenter() { return center; }
     public Color getColor() { return color; }
 
     public Double intersect(Ray ray) {
@@ -24,7 +25,13 @@ public class Sphere {
         double discriminant = b * b - 4 * a * c;
 
         if (discriminant < 0) return null;
-        return (-b - Math.sqrt(discriminant)) / (2.0 * a);
-    }
 
+        double t1 = (-b - Math.sqrt(discriminant)) / (2.0 * a);
+        double t2 = (-b + Math.sqrt(discriminant)) / (2.0 * a);
+
+        // Return the closest positive intersection
+        if (t1 > 0) return t1;
+        if (t2 > 0) return t2;
+        return null;
+    }
 }
