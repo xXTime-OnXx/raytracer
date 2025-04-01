@@ -2,22 +2,19 @@ package ch.hslu.raytracer;
 
 import java.awt.*;
 
-public class Sphere {
+public class Sphere extends Object3D {
 
     private final Vector center;
     private final double radius;
-    private final Color color;
 
     public Sphere(Vector center, double radius, Color color) {
+        super(color);
         this.center = center;
         this.radius = radius;
-        this.color = color;
     }
 
-    public Vector getCenter() { return center; }
-    public Color getColor() { return color; }
-
-    public Double intersect(Ray ray) {
+    @Override
+    public HitInfo intersect(Ray ray) {
         Vector oc = ray.origin().subtract(center);
         double a = ray.direction().dot(ray.direction());
         double b = 2.0 * oc.dot(ray.direction());
@@ -29,9 +26,20 @@ public class Sphere {
         double t1 = (-b - Math.sqrt(discriminant)) / (2.0 * a);
         double t2 = (-b + Math.sqrt(discriminant)) / (2.0 * a);
 
-        // Return the closest positive intersection
-        if (t1 > 0) return t1;
-        if (t2 > 0) return t2;
-        return null;
+        // Get the closest positive intersection
+        double t;
+        if (t1 > 0.0001) {
+            t = t1;
+        } else if (t2 > 0.0001) {
+            t = t2;
+        } else {
+            return null; // No valid intersection
+        }
+
+        // Calculate intersection point and normal
+        Vector hitPoint = ray.origin().add(ray.direction().scale(t));
+        Vector normal = hitPoint.subtract(center).normalize();
+
+        return new HitInfo(this, hitPoint, normal, t);
     }
 }

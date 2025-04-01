@@ -23,4 +23,12 @@ public record Vector(double x, double y, double z) {
         return new Vector(x * s, y * s, z * s);
     }
 
+    public Vector cross(Vector v) {
+        return new Vector(
+                y * v.z - z * v.y,
+                z * v.x - x * v.z,
+                x * v.y - y * v.x
+        );
+    }
+
 }

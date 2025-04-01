@@ -35,6 +35,19 @@ public class RayTracer {
         scene.addSphere(new Sphere(new Vector(1.0, 0.1, 1), 0.7, new Color(220, 100, 100))); // Red sphere
         scene.addSphere(new Sphere(new Vector(0, -1001, 0), 1000, new Color(200, 200, 100))); // Ground plane as huge sphere
 
+        // Add rotated cubes to show multiple faces
+        scene.addRotatedCube(new RotatedCube(
+                new Vector(1.5, 0.3, 0.5), 1.0,
+                new Color(180, 120, 200), // Purple cube
+                Math.toRadians(30), Math.toRadians(45), Math.toRadians(15)
+        ));
+
+        scene.addRotatedCube(new RotatedCube(
+                new Vector(-1.5, 0.0, 0.7), 0.8,
+                new Color(100, 200, 120), // Green cube
+                Math.toRadians(15), Math.toRadians(-30), Math.toRadians(5)
+        ));
+
         // Add lights
         scene.addLight(new Light(new Vector(-5, 5, -5), Color.WHITE, 0.8)); // Main light
         scene.addLight(new Light(new Vector(3, 3, -3), new Color(200, 200, 255), 0.4)); // Fill light
