@@ -1,4 +1,6 @@
-package ch.hslu.raytracer;
+package ch.hslu.raytracer.scene;
+
+import ch.hslu.raytracer.core.Vector;
 
 import java.awt.Color;
 

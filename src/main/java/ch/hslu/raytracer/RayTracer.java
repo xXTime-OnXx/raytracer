@@ -1,9 +1,15 @@
 package ch.hslu.raytracer;
 
+import ch.hslu.raytracer.core.Ray;
+import ch.hslu.raytracer.core.Vector;
+import ch.hslu.raytracer.materials.MaterialType;
+import ch.hslu.raytracer.scene.Camera;
+import ch.hslu.raytracer.scene.Scene;
+import ch.hslu.raytracer.scene.SceneBuilder;
+
 import javax.imageio.ImageIO;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,77 +19,99 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class RayTracer {
-    private static final int WIDTH = 1000;
-    private static final int HEIGHT = 1000;
-    private static final Vector CAMERA = new Vector(0, 0, -5);
-    private static final int NUM_THREADS = Runtime.getRuntime().availableProcessors(); // Use available CPU cores
 
     public static void main(String[] args) {
         RayTracer rayTracer = new RayTracer();
+
+        // Create default settings
+        RenderSettings settings = RenderSettings.createDefault();
+
+        // Create default camera
+        Camera camera = Camera.createDefault();
+
+        // Create a scene using the builder
+        Scene scene = createDemoScene();
+
         long startTime = System.currentTimeMillis();
-        rayTracer.renderScene();
+        rayTracer.renderScene(scene, camera, settings);
         long endTime = System.currentTimeMillis();
-        System.out.println("Rendering completed in " + (endTime - startTime) + " ms using " + NUM_THREADS + " threads");
+
+        System.out.println("Rendering completed in " + (endTime - startTime) + " ms using " +
+                settings.getNumThreads() + " threads");
     }
 
-    public void renderScene() {
-        BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
-        Scene scene = new Scene();
+    /**
+     * Creates a demo scene with various objects and materials.
+     */
+    private static Scene createDemoScene() {
+        return new SceneBuilder()
+                // Add spheres
+                .addSphere(new Vector(-1.0, 0.7, 2), 1.0, MaterialType.RUBY, 0.4)
+                .addSphere(new Vector(1.0, 0.1, 1), 0.7, MaterialType.GOLD, 0.6)
+                .addSphere(new Vector(0, -1001, 0), 1000, MaterialType.GREEN_PLASTIC, 0.1)
 
-        // Add spheres with materials
-        scene.addSphere(new Sphere(new Vector(-1.0, 0.7, 2), 1,
-                Material.create(MaterialType.RUBY, 0.4))); // Ruby sphere with reflectivity
+                // Add cubes
+                .addRotatedCube(
+                        new Vector(1.5, 0.3, 0.5), 1.0, MaterialType.PEARL, 0.3,
+                        30, 45, 15
+                )
+                .addRotatedCube(
+                        new Vector(-1.5, 0.0, 0.7), 0.8, MaterialType.SILVER, 0.7,
+                        15, -30, 5
+                )
 
-        scene.addSphere(new Sphere(new Vector(1.0, 0.1, 1), 0.7,
-                Material.create(MaterialType.GOLD, 0.6))); // Gold sphere with higher reflectivity
+                // Add lights
+                .addLight(new Vector(-5, 5, -5), Color.WHITE, 1.0)
+                .addLight(new Vector(3, 3, -3), new Color(200, 200, 255), 0.8)
 
-        scene.addSphere(new Sphere(new Vector(0, -1001, 0), 1000,
-                Material.create(MaterialType.GREEN_PLASTIC, 0.1))); // Green plastic ground plane as huge sphere
+                .build();
+    }
 
-        // Add rotated cubes to show multiple faces
-        scene.addRotatedCube(new RotatedCube(
-                new Vector(1.5, 0.3, 0.5), 1.0,
-                Material.create(MaterialType.PEARL, 0.3), // Pearl cube
-                Math.toRadians(30), Math.toRadians(45), Math.toRadians(15)
-        ));
+    /**
+     * Renders a scene using the specified camera and settings.
+     *
+     * @param scene The scene to render
+     * @param camera The camera to use for rendering
+     * @param settings The render settings
+     */
+    public void renderScene(Scene scene, Camera camera, RenderSettings settings) {
+        // Set the max reflection depth in the scene
+        scene.setMaxReflectionDepth(settings.getMaxReflectionDepth());
 
-        scene.addRotatedCube(new RotatedCube(
-                new Vector(-1.5, 0.0, 0.7), 0.8,
-                Material.create(MaterialType.SILVER, 0.7), // Silver cube with high reflectivity
-                Math.toRadians(15), Math.toRadians(-30), Math.toRadians(5)
-        ));
+        // Create the image
+        BufferedImage image = new BufferedImage(
+                settings.getWidth(),
+                settings.getHeight(),
+                BufferedImage.TYPE_INT_RGB
+        );
 
-        // Add lights
-        scene.addLight(new Light(new Vector(-5, 5, -5), Color.WHITE, 1)); // Main light
-        scene.addLight(new Light(new Vector(3, 3, -3), new Color(200, 200, 255), 0.8)); // Fill light
-
-        // Create a list of all scan lines and shuffle them randomly
-        List<Integer> scanLines = new ArrayList<>(HEIGHT);
-        for (int y = 0; y < HEIGHT; y++) {
+        // Create a list of all scan lines and shuffle them randomly for better load balancing
+        List<Integer> scanLines = new ArrayList<>(settings.getHeight());
+        for (int y = 0; y < settings.getHeight(); y++) {
             scanLines.add(y);
         }
         Collections.shuffle(scanLines);
 
         // Divide the scan lines among threads
-        int linesPerThread = (int) Math.ceil((double) HEIGHT / NUM_THREADS);
-        List<List<Integer>> threadTasks = new ArrayList<>(NUM_THREADS);
+        int linesPerThread = (int) Math.ceil((double) settings.getHeight() / settings.getNumThreads());
+        List<List<Integer>> threadTasks = new ArrayList<>(settings.getNumThreads());
 
-        for (int i = 0; i < NUM_THREADS; i++) {
+        for (int i = 0; i < settings.getNumThreads(); i++) {
             int startIdx = i * linesPerThread;
-            int endIdx = Math.min(startIdx + linesPerThread, HEIGHT);
+            int endIdx = Math.min(startIdx + linesPerThread, settings.getHeight());
 
-            if (startIdx < HEIGHT) {
+            if (startIdx < settings.getHeight()) {
                 threadTasks.add(scanLines.subList(startIdx, endIdx));
             }
         }
 
         // Use CountDownLatch to wait for all threads to complete
         CountDownLatch latch = new CountDownLatch(threadTasks.size());
-        ExecutorService executor = Executors.newFixedThreadPool(NUM_THREADS);
+        ExecutorService executor = Executors.newFixedThreadPool(settings.getNumThreads());
 
         // Submit rendering tasks to the thread pool
         for (List<Integer> task : threadTasks) {
-            executor.submit(new RenderTask(task, image, scene, latch));
+            executor.submit(new RenderTask(task, image, scene, camera, settings, latch));
         }
 
         // Wait for all threads to finish
@@ -97,19 +125,33 @@ public class RayTracer {
         // Shut down the executor
         executor.shutdown();
 
-        saveImage(image);
+        // Save the image
+        try {
+            ImageIO.write(image, settings.getOutputFormat(), settings.getOutputFile());
+        } catch (IOException e) {
+            System.err.println("Error saving image: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
+    /**
+     * Task for rendering a set of scan lines.
+     */
     private static class RenderTask implements Runnable {
         private final List<Integer> scanLines;
         private final BufferedImage image;
         private final Scene scene;
+        private final Camera camera;
+        private final RenderSettings settings;
         private final CountDownLatch latch;
 
-        public RenderTask(List<Integer> scanLines, BufferedImage image, Scene scene, CountDownLatch latch) {
+        public RenderTask(List<Integer> scanLines, BufferedImage image, Scene scene,
+                          Camera camera, RenderSettings settings, CountDownLatch latch) {
             this.scanLines = scanLines;
             this.image = image;
             this.scene = scene;
+            this.camera = camera;
+            this.settings = settings;
             this.latch = latch;
         }
 
@@ -117,10 +159,16 @@ public class RayTracer {
         public void run() {
             try {
                 for (int y : scanLines) {
-                    for (int x = 0; x < WIDTH; x++) {
-                        double nx = (x - WIDTH / 2.0) / WIDTH;
-                        double ny = -(y - HEIGHT / 2.0) / HEIGHT;
-                        Ray ray = new Ray(CAMERA, new Vector(nx, ny, 1));
+                    for (int x = 0; x < settings.getWidth(); x++) {
+                        // Convert pixel coordinates to normalized device coordinates
+                        // Using the same normalization as in the original code
+                        double nx = (x - settings.getWidth() / 2.0) / settings.getWidth();
+                        double ny = -(y - settings.getHeight() / 2.0) / settings.getHeight();
+
+                        // Create a ray from the camera
+                        Ray ray = camera.createRay(nx, ny);
+
+                        // Trace the ray through the scene
                         Color pixelColor = scene.trace(ray);
 
                         // Synchronize access to the shared image
@@ -132,14 +180,6 @@ public class RayTracer {
             } finally {
                 latch.countDown();
             }
-        }
-    }
-
-    private void saveImage(BufferedImage image) {
-        try {
-            ImageIO.write(image, "png", new File("raytraced_image.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

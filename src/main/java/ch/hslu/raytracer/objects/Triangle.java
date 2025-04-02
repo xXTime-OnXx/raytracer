@@ -1,4 +1,9 @@
-package ch.hslu.raytracer;
+package ch.hslu.raytracer.objects;
+
+import ch.hslu.raytracer.core.HitInfo;
+import ch.hslu.raytracer.core.Ray;
+import ch.hslu.raytracer.core.Vector;
+import ch.hslu.raytracer.materials.Material;
 
 public class Triangle extends Object3D {
     private final Vector v0, v1, v2; // Vertices

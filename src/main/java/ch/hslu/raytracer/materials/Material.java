@@ -1,4 +1,4 @@
-package ch.hslu.raytracer;
+package ch.hslu.raytracer.materials;
 
 import java.awt.Color;
 

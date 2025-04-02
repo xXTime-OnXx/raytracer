@@ -1,4 +1,9 @@
-package ch.hslu.raytracer;
+package ch.hslu.raytracer.objects;
+
+import ch.hslu.raytracer.core.HitInfo;
+import ch.hslu.raytracer.core.Ray;
+import ch.hslu.raytracer.core.Vector;
+import ch.hslu.raytracer.materials.Material;
 
 public class Sphere extends Object3D {
 

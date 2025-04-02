@@ -1,4 +1,12 @@
-package ch.hslu.raytracer;
+package ch.hslu.raytracer.scene;
+
+import ch.hslu.raytracer.core.HitInfo;
+import ch.hslu.raytracer.core.Ray;
+import ch.hslu.raytracer.core.Vector;
+import ch.hslu.raytracer.materials.Material;
+import ch.hslu.raytracer.objects.Object3D;
+import ch.hslu.raytracer.objects.RotatedCube;
+import ch.hslu.raytracer.objects.Sphere;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -9,11 +17,19 @@ public class Scene {
     private final List<Object3D> objects;
     private final List<Light> lights;
     private static final Color BACKGROUND_COLOR = Color.BLACK;
-    private static final int MAX_REFLECTION_DEPTH = 10; // Maximum reflection depth to prevent infinite recursion
+    private int maxReflectionDepth = 10; // Default value
 
     public Scene() {
         objects = new ArrayList<>();
         lights = new ArrayList<>();
+    }
+
+    public void setMaxReflectionDepth(int maxReflectionDepth) {
+        this.maxReflectionDepth = maxReflectionDepth;
+    }
+
+    public void addObject(Object3D object) {
+        objects.add(object);
     }
 
     public void addSphere(Sphere sphere) {
@@ -101,7 +117,7 @@ public class Scene {
 
         // Add reflection component if we haven't reached the maximum depth
         double reflectivity = material.getReflectivity();
-        if (reflectivity > 0 && depth < MAX_REFLECTION_DEPTH) {
+        if (reflectivity > 0 && depth < maxReflectionDepth) {
             Vector reflectionDir = reflect(ray.direction(), normal);
             Ray reflectionRay = new Ray(hitPoint, reflectionDir);
 

@@ -1,4 +1,4 @@
-package ch.hslu.raytracer;
+package ch.hslu.raytracer.core;
 
 public record Ray(Vector origin, Vector direction) {
 

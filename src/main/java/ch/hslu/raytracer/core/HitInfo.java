@@ -1,4 +1,6 @@
-package ch.hslu.raytracer;
+package ch.hslu.raytracer.core;
+
+import ch.hslu.raytracer.objects.Object3D;
 
 public class HitInfo {
     private final Object3D object;

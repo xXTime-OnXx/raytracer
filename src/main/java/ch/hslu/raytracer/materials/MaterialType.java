@@ -1,4 +1,4 @@
-package ch.hslu.raytracer;
+package ch.hslu.raytracer.materials;
 
 /**
  * Enum representing different material types for rendering.
