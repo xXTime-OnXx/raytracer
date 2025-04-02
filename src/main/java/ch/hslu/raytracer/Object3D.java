@@ -1,12 +1,10 @@
 package ch.hslu.raytracer;
 
-import java.awt.Color;
-
 public abstract class Object3D {
-    protected final Color color;
+    protected final Material material;
 
-    public Object3D(Color color) {
-        this.color = color;
+    public Object3D(Material material) {
+        this.material = material;
     }
 
     /**
@@ -18,11 +16,12 @@ public abstract class Object3D {
     public abstract HitInfo intersect(Ray ray);
 
     /**
-     * Gets the color of this object.
+     * Gets the material of this object.
      *
-     * @return The color of the object
+     * @return The material of the object
      */
-    public Color getColor() {
-        return color;
+    public Material getMaterial() {
+        return material;
     }
+
 }

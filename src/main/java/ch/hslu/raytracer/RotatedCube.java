@@ -1,6 +1,5 @@
 package ch.hslu.raytracer;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +11,8 @@ public class RotatedCube extends Object3D {
     private final double rotationZ; // Rotation around Z-axis in radians
     private final List<Triangle> triangles;
 
-    public RotatedCube(Vector center, double size, Color color, double rotationX, double rotationY, double rotationZ) {
-        super(color);
+    public RotatedCube(Vector center, double size, Material material, double rotationX, double rotationY, double rotationZ) {
+        super(material);
         this.center = center;
         this.size = size;
         this.rotationX = rotationX;
@@ -50,28 +49,28 @@ public class RotatedCube extends Object3D {
         }
 
         // Front face
-        result.add(new Triangle(vertices[4], vertices[5], vertices[6], color));
-        result.add(new Triangle(vertices[4], vertices[6], vertices[7], color));
+        result.add(new Triangle(vertices[4], vertices[5], vertices[6], material));
+        result.add(new Triangle(vertices[4], vertices[6], vertices[7], material));
 
         // Back face
-        result.add(new Triangle(vertices[1], vertices[0], vertices[3], color));
-        result.add(new Triangle(vertices[1], vertices[3], vertices[2], color));
+        result.add(new Triangle(vertices[1], vertices[0], vertices[3], material));
+        result.add(new Triangle(vertices[1], vertices[3], vertices[2], material));
 
         // Left face
-        result.add(new Triangle(vertices[0], vertices[4], vertices[7], color));
-        result.add(new Triangle(vertices[0], vertices[7], vertices[3], color));
+        result.add(new Triangle(vertices[0], vertices[4], vertices[7], material));
+        result.add(new Triangle(vertices[0], vertices[7], vertices[3], material));
 
         // Right face
-        result.add(new Triangle(vertices[5], vertices[1], vertices[2], color));
-        result.add(new Triangle(vertices[5], vertices[2], vertices[6], color));
+        result.add(new Triangle(vertices[5], vertices[1], vertices[2], material));
+        result.add(new Triangle(vertices[5], vertices[2], vertices[6], material));
 
         // Top face
-        result.add(new Triangle(vertices[7], vertices[6], vertices[2], color));
-        result.add(new Triangle(vertices[7], vertices[2], vertices[3], color));
+        result.add(new Triangle(vertices[7], vertices[6], vertices[2], material));
+        result.add(new Triangle(vertices[7], vertices[2], vertices[3], material));
 
         // Bottom face
-        result.add(new Triangle(vertices[0], vertices[1], vertices[5], color));
-        result.add(new Triangle(vertices[0], vertices[5], vertices[4], color));
+        result.add(new Triangle(vertices[0], vertices[1], vertices[5], material));
+        result.add(new Triangle(vertices[0], vertices[5], vertices[4], material));
 
         return result;
     }

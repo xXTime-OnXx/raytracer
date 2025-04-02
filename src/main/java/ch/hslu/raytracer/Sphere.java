@@ -1,14 +1,12 @@
 package ch.hslu.raytracer;
 
-import java.awt.*;
-
 public class Sphere extends Object3D {
 
     private final Vector center;
     private final double radius;
 
-    public Sphere(Vector center, double radius, Color color) {
-        super(color);
+    public Sphere(Vector center, double radius, Material material) {
+        super(material);
         this.center = center;
         this.radius = radius;
     }

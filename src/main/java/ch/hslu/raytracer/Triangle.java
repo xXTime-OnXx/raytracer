@@ -1,13 +1,11 @@
 package ch.hslu.raytracer;
 
-import java.awt.Color;
-
 public class Triangle extends Object3D {
     private final Vector v0, v1, v2; // Vertices
     private final Vector normal;     // Normal vector
 
-    public Triangle(Vector v0, Vector v1, Vector v2, Color color) {
-        super(color);
+    public Triangle(Vector v0, Vector v1, Vector v2, Material material) {
+        super(material);
         this.v0 = v0;
         this.v1 = v1;
         this.v2 = v2;
