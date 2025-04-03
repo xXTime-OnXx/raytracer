@@ -57,8 +57,8 @@ public class RenderSettings {
      * Builder for RenderSettings.
      */
     public static class Builder {
-        private int width = 1000;
-        private int height = 1000;
+        private int width = 1920;
+        private int height = 1080;
         private int maxReflectionDepth = 10;
         private int numThreads = Runtime.getRuntime().availableProcessors();
         private String outputFilename = "raytraced_image";

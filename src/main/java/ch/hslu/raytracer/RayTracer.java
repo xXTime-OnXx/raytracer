@@ -23,13 +23,8 @@ public class RayTracer {
     public static void main(String[] args) {
         RayTracer rayTracer = new RayTracer();
 
-        // Create default settings
         RenderSettings settings = RenderSettings.createDefault();
-
-        // Create default camera
         Camera camera = Camera.createDefault();
-
-        // Create a scene using the builder
         Scene scene = createDemoScene();
 
         long startTime = System.currentTimeMillis();
@@ -63,7 +58,6 @@ public class RayTracer {
                 // Add lights
                 .addLight(new Vector(-5, 5, -5), Color.WHITE, 1.0)
                 .addLight(new Vector(3, 3, -3), new Color(200, 200, 255), 0.8)
-
                 .build();
     }
 
@@ -158,12 +152,14 @@ public class RayTracer {
         @Override
         public void run() {
             try {
+                // Calculate aspect ratio
+                double aspectRatio = (double) settings.getWidth() / settings.getHeight();
+
                 for (int y : scanLines) {
                     for (int x = 0; x < settings.getWidth(); x++) {
-                        // Convert pixel coordinates to normalized device coordinates
-                        // Using the same normalization as in the original code
-                        double nx = (x - settings.getWidth() / 2.0) / settings.getWidth();
-                        double ny = -(y - settings.getHeight() / 2.0) / settings.getHeight();
+                        // Convert pixel coordinates to normalized device coordinates with aspect ratio correction
+                        double nx = ((x - settings.getWidth() / 2.0) / (settings.getWidth() / 2.0)) * aspectRatio;
+                        double ny = -(y - settings.getHeight() / 2.0) / (settings.getHeight() / 2.0);
 
                         // Create a ray from the camera
                         Ray ray = camera.createRay(nx, ny);
