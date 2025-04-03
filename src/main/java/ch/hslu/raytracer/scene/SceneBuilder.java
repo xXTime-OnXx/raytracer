@@ -22,7 +22,7 @@ public class SceneBuilder {
      * Adds a sphere to the scene.
      */
     public SceneBuilder addSphere(Vector center, double radius, MaterialType material, double reflectivity) {
-        scene.addSphere(new Sphere(center, radius, Material.create(material, reflectivity)));
+        scene.addObject(new Sphere(center, radius, Material.create(material, reflectivity)));
         return this;
     }
 
@@ -31,7 +31,7 @@ public class SceneBuilder {
      */
     public SceneBuilder addRotatedCube(Vector center, double size, MaterialType material, double reflectivity,
                                        double rotationX, double rotationY, double rotationZ) {
-        scene.addRotatedCube(new RotatedCube(
+        scene.addObject(new RotatedCube(
                 center, size, Material.create(material, reflectivity),
                 Math.toRadians(rotationX), Math.toRadians(rotationY), Math.toRadians(rotationZ)
         ));

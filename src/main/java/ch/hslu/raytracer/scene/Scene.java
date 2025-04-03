@@ -5,13 +5,15 @@ import ch.hslu.raytracer.core.Ray;
 import ch.hslu.raytracer.core.Vector;
 import ch.hslu.raytracer.materials.Material;
 import ch.hslu.raytracer.objects.Object3D;
-import ch.hslu.raytracer.objects.RotatedCube;
-import ch.hslu.raytracer.objects.Sphere;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
 public class Scene {
 
     private final List<Object3D> objects;
@@ -24,20 +26,8 @@ public class Scene {
         lights = new ArrayList<>();
     }
 
-    public void setMaxReflectionDepth(int maxReflectionDepth) {
-        this.maxReflectionDepth = maxReflectionDepth;
-    }
-
     public void addObject(Object3D object) {
         objects.add(object);
-    }
-
-    public void addSphere(Sphere sphere) {
-        objects.add(sphere);
-    }
-
-    public void addRotatedCube(RotatedCube cube) {
-        objects.add(cube);
     }
 
     public void addLight(Light light) {

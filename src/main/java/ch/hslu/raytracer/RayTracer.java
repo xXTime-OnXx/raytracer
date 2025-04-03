@@ -36,32 +36,6 @@ public class RayTracer {
     }
 
     /**
-     * Creates a demo scene with various objects and materials.
-     */
-    private static Scene createDemoScene() {
-        return new SceneBuilder()
-                // Add spheres
-                .addSphere(new Vector(-1.0, 0.7, 2), 1.0, MaterialType.RUBY, 0.4)
-                .addSphere(new Vector(1.0, 0.1, 1), 0.7, MaterialType.GOLD, 0.6)
-                .addSphere(new Vector(0, -1001, 0), 1000, MaterialType.GREEN_PLASTIC, 0.1)
-
-                // Add cubes
-                .addRotatedCube(
-                        new Vector(1.5, 0.3, 0.5), 1.0, MaterialType.PEARL, 0.3,
-                        30, 45, 15
-                )
-                .addRotatedCube(
-                        new Vector(-1.5, 0.0, 0.7), 0.8, MaterialType.SILVER, 0.7,
-                        15, -30, 5
-                )
-
-                // Add lights
-                .addLight(new Vector(-5, 5, -5), Color.WHITE, 1.0)
-                .addLight(new Vector(3, 3, -3), new Color(200, 200, 255), 0.8)
-                .build();
-    }
-
-    /**
      * Renders a scene using the specified camera and settings.
      *
      * @param scene The scene to render
@@ -126,6 +100,33 @@ public class RayTracer {
             System.err.println("Error saving image: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Creates a demo scene with various objects and materials.
+     */
+    private static Scene createDemoScene() {
+        return new SceneBuilder()
+                // Add spheres
+                .addSphere(new Vector(-1.0, 0.7, 2), 1.0, MaterialType.RUBY, 0.4)
+                .addSphere(new Vector(1.0, 0.1, 1), 0.7, MaterialType.GOLD, 0.6)
+                .addSphere(new Vector(0, -1001, 0), 1000, MaterialType.JADE, 0.8)
+                .addSphere(new Vector(0, 500, 1020), 1000, MaterialType.TURQUOISE, 0)
+
+                // Add cubes
+                .addRotatedCube(
+                        new Vector(1.5, 0.3, 0.5), 1.0, MaterialType.PEARL, 0.3,
+                        30, 45, 15
+                )
+                .addRotatedCube(
+                        new Vector(-1.5, 0.0, 0.7), 0.8, MaterialType.SILVER, 0.7,
+                        15, -30, 5
+                )
+
+                // Add lights
+                .addLight(new Vector(-5, 5, -5), Color.WHITE, 1.0)
+                .addLight(new Vector(3, 3, -3), new Color(200, 200, 255), 0.8)
+                .build();
     }
 
     /**

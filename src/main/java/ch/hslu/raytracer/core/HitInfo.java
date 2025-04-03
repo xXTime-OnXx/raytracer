@@ -1,7 +1,9 @@
 package ch.hslu.raytracer.core;
 
 import ch.hslu.raytracer.objects.Object3D;
+import lombok.Getter;
 
+@Getter
 public class HitInfo {
     private final Object3D object;
     private final Vector hitPoint;
@@ -13,21 +15,5 @@ public class HitInfo {
         this.hitPoint = hitPoint;
         this.normal = normal;
         this.distance = distance;
-    }
-
-    public Object3D getObject() {
-        return object;
-    }
-
-    public Vector getHitPoint() {
-        return hitPoint;
-    }
-
-    public Vector getNormal() {
-        return normal;
-    }
-
-    public double getDistance() {
-        return distance;
     }
 }

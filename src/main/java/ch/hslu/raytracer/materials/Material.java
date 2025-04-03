@@ -1,7 +1,10 @@
 package ch.hslu.raytracer.materials;
 
+import lombok.Getter;
+
 import java.awt.Color;
 
+@Getter
 public class Material {
     private final MaterialType type;
     private final Color ambient;
@@ -159,25 +162,5 @@ public class Material {
                     new Color(0.7f, 0.7f, 0.04f),
                     0.078125, reflectivity);
         };
-    }
-
-    public Color getAmbient() {
-        return ambient;
-    }
-
-    public Color getDiffuse() {
-        return diffuse;
-    }
-
-    public Color getSpecular() {
-        return specular;
-    }
-
-    public double getShininess() {
-        return shininess;
-    }
-
-    public double getReflectivity() {
-        return reflectivity;
     }
 }
